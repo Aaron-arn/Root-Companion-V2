@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Root Companion</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="root-sprite" class="root-sprite" data-state="idle">
+            <img id="root-img" src="../../asset/root-idle.png" alt="Root" draggable="false" />
+            <div id="root-label" class="root-label">Root</div>
+        </div>
+        <div id="root-controls" class="root-controls hidden">
+            <button id="ctrl-chat" class="ctrl-btn" title="Parler">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+            </button>
+            <button id="ctrl-roam" class="ctrl-btn active" title="Promenade: ON">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="5" cy="18" r="1.5" />
+                    <circle cx="18" cy="18" r="1.5" />
+                    <path d="M5 18v-4h6l2-4h4" />
+                </svg>
+            </button>
+            <button id="ctrl-settings" class="ctrl-btn" title="Parametres">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82a2 2 0 0 1-2.83 2.83a1.65 1.65 0 0 0-1.82-.33V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33a2 2 0 0 1-2.83-2.83A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82a2 2 0 0 1 2.83-2.83A1.65 1.65 0 0 0 9 4.68V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 .5a1.65 1.65 0 0 0 1.82-.33a2 2 0 0 1 2.83 2.83A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z" />
+                </svg>
+            </button>
+        </div>
+        <div id="chat-bubble" class="chat-bubble hidden">
+            <div class="chat-header">
+                <span class="chat-title">ROOT</span>
+                <button id="chat-close" class="chat-close">✕</button>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <div class="msg root">
+                    <span class="author">Root</span>
+                    <span class="text">Salut ! Moi c'est Root ton assistant ia, hesite pas a m'écrirre </span>
+                </div>
+            </div>
+            <div class="chat-input-row">
+                <input id="chat-input" class="chat-input" placeholder="Ecris a Root..." autocomplete="off" />
+                <button id="chat-send" class="chat-send">➤</button>
+            </div>
+        </div>
+        <script src="renderer.js"></script>
+    </body>
+</html>

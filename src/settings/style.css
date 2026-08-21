@@ -1,0 +1,220 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #1e1e28;
+    color: #e0e0e0;
+}
+.container {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 16px;
+}
+.header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.header img {
+    width: 48px;
+    height: 48px;
+    image-rendering: auto;
+}
+.header h1 {
+    font-size: 18px;
+    color: #ff6600;
+}
+.header p {
+    font-size: 12px;
+    color: #999;
+}
+.tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid rgba(255, 102, 0, 0.2);
+    padding-bottom: 8px;
+}
+.tab {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 102, 0, 0.2);
+    color: #ccc;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.tab.active {
+    background: #ff6600;
+    color: #fff;
+    border-color: #ff6600;
+}
+.panel {
+    display: none;
+}
+.panel.active {
+    display: block;
+}
+.group {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 102, 0, 0.15);
+    padding: 14px;
+    margin-bottom: 12px;
+}
+.group h3 {
+    font-size: 13px;
+    color: #ff6600;
+    margin-bottom: 8px;
+}
+.desc {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #bbb;
+}
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0;
+}
+.row label {
+    font-size: 12px;
+    color: #ccc;
+}
+.row input[type="text"],
+.row input[type="password"],
+.row select {
+    flex: 1;
+    max-width: 260px;
+    background: #14141c;
+    border: 1px solid rgba(255, 102, 0, 0.3);
+    color: #e0e0e0;
+    padding: 6px 8px;
+    font-size: 12px;
+    outline: none;
+}
+.range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: flex-end;
+}
+.range input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 160px;
+    height: 6px;
+    background: #0f0f14;
+    border: 1px solid #333;
+    outline: none;
+}
+.range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #ff6600;
+    border: 1px solid #7a2f00;
+    cursor: pointer;
+    box-shadow: 1px 1px 0 #000;
+}
+.range input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #ff6600;
+    border: 1px solid #7a2f00;
+    cursor: pointer;
+    box-shadow: 1px 1px 0 #000;
+}
+.range input[type="range"]:focus {
+    border-color: #ff6600;
+}
+.range span {
+    font-size: 11px;
+    color: #ff6600;
+    min-width: 60px;
+    text-align: right;
+}
+.switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    display: inline-block;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.switch span {
+    position: absolute;
+    inset: 0;
+    background: #333;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+.switch span:before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+.switch input:checked + span {
+    background: #ff6600;
+}
+.switch input:checked + span:before {
+    transform: translateX(16px);
+}
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+.btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 102, 0, 0.3);
+    color: #e0e0e0;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.btn.primary {
+    background: #ff6600;
+    border-color: #7a2f00;
+    color: #fff;
+}
+.btn:hover {
+    filter: brightness(1.1);
+}
+.result {
+    margin-top: 10px;
+    padding: 8px;
+    font-size: 12px;
+    border: 1px solid rgba(255, 102, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+}
+.result.hidden {
+    display: none;
+}
+.result.ok {
+    border-color: rgba(0, 200, 0, 0.4);
+    color: #7fdb7f;
+}
+.result.err {
+    border-color: rgba(200, 0, 0, 0.4);
+    color: #ff8888;
+}
+code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1px 4px;
+    font-size: 11px;
+}

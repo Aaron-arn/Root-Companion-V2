@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Parametres - Root</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <img src="../../asset/root-idle.png" alt="Root" />
+                <div>
+                    <h1>Root Companion V2</h1>
+                    <p>Reglages</p>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab active" data-tab="sprite">Sprite</button>
+                <button class="tab" data-tab="ia">IA</button>
+                <button class="tab" data-tab="about">A propos</button>
+            </div>
+            <div class="panel active" id="panel-sprite">
+                <div class="group">
+                    <h3>Apparence du spritte</h3>
+                    <div class="row">
+                        <label>Taille</label>
+                        <div class="range">
+                            <input type="range" id="scale" min="64" max="256" step="16" value="128" />
+                            <span id="scale-value">128px</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>Promenade auto</label>
+                        <label class="switch">
+                            <input type="checkbox" id="roam-enabled" checked />
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>Intervalle promenade</label>
+                        <div class="range">
+                            <input type="range" id="roam-interval" min="5" max="300" step="5" value="15" />
+                            <span id="roam-interval-value">15s</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>Vitesse balade</label>
+                        <div class="range">
+                            <input type="range" id="roam-speed" min="0.5" max="5" step="0.5" value="1.8" />
+                            <span id="roam-speed-value">1.8s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel" id="panel-ia">
+                <div class="group">
+                    <h3>Configuratioon IA</h3>
+                    <p class="desc">Configure ton fournisseur IA. OpenAI compatible marche avec OpenAI, Mistral, Groq etc.</p>
+                    <div class="row">
+                        <label>Provider</label>
+                        <select id="api-provider">
+                            <option value="openai">OpenAI Compatible</option>
+                            <option value="anthropic">Anthropic</option>
+                            <option value="custom">Custom URL</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label>Modele</label>
+                        <input type="text" id="api-model" placeholder="gpt-4o-mini" />
+                    </div>
+                    <div class="row">
+                        <label>Cle API</label>
+                        <input type="password" id="api-key" placeholder="sk-..." />
+                    </div>
+                    <div class="row" id="base-url-row" style="display:none">
+                        <label>Base URL</label>
+                        <input type="text" id="api-base-url" placeholder="https://api.mistral.ai" />
+                    </div>
+                    <div class="actions">
+                        <button class="btn primary" id="save-ia">Sauvegarder</button>
+                        <button class="btn" id="test-ia">Tester</button>
+                    </div>
+                    <div id="ia-result" class="result hidden"></div>
+                </div>
+            </div>
+            <div class="panel" id="panel-about">
+                <div class="group">
+                    <h3>Root Companion V2</h3>
+                    <p class="desc">
+                        Pet de bureau qui vit sur ton ecran. Tu peux le deplacer, il se balade tout seul.<br><br>
+                        <strong>Jour 1</strong> : overlay + drag + promenade + hover boutons<br>
+                        <strong>Jour 2</strong> : parametres (cette fenetre)<br>
+                        <strong>Suite</strong> : chat IA, memoire, vision ecran, agent autonome<br><br>
+                        Mascotte imposee du hackathon utilisee dans <code>asset/</code><br><br>
+                        Hackathon 2026 - MIT
+                    </p>
+                </div>
+                <div class="group">
+                    <h3>Controles</h3>
+                    <p class="desc">
+                        Clic gauche sur Rout : animationn<br>
+                        Glisser : deplacerr<br>
+                        Survol : affiche les boutonss<br>
+                        Clic droit : ouvre les parametres<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <script src="renderer.js"></script>
+    </body>
+</html>
