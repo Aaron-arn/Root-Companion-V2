@@ -23,6 +23,11 @@
                     <path d="M5 18v-4h6l2-4h4" />
                 </svg>
             </button>
+            <button id="ctrl-sleep" class="ctrl-btn" title="Dormir">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
             <button id="ctrl-settings" class="ctrl-btn" title="Parametres">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="3" />
@@ -45,6 +50,28 @@
                 <input id="chat-input" class="chat-input" placeholder="Ecris a Root..." autocomplete="off" />
                 <button id="chat-send" class="chat-send">➤</button>
             </div>
+        </div>
+        <div id="sleep-bubble" class="sleep-bubble hidden">
+            <img src="../../asset/root-sleep.png" class="sleep-icon" alt="sleep" />
+            <div class="sleep-text">
+                <span class="sleep-title">Root dort...</span>
+                <span class="sleep-sub">Chut il se repose</span>
+            </div>
+            <button id="sleep-wake-btn" class="sleep-wake">Reveiller</button>
+            <button id="sleep-hide-btn" class="sleep-hide">﹀</button>
+        </div>
+        <div id="sleep-pill" class="sleep-pill hidden" title="Root dort - clique">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </div>
+        <div id="notif-bubble" class="notif-bubble hidden">
+            <img src="../../asset/root-sleep.png" class="sleep-icon" alt="sleep" />
+            <div class="sleep-text">
+                <span class="sleep-title">Root dort profondement</span>
+                <span class="sleep-sub">Clique pour le reveiller</span>
+            </div>
+            <button id="notif-close" class="sleep-hide">✕</button>
         </div>
         <script src="renderer.js"></script>
     </body>

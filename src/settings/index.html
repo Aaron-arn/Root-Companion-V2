@@ -50,6 +50,31 @@
                             <span id="roam-speed-value">1.8s</span>
                         </div>
                     </div>
+                    <div class="row">
+                        <label>Délai avant dormir (min)</label>
+                        <div class="range">
+                            <input type="range" id="idle-sleep" min="1" max="10" step="1" value="3" />
+                            <span id="idle-sleep-value">3 min</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>Délai avant disparition (min)</label>
+                        <div class="range">
+                            <input type="range" id="idle-hide" min="1" max="15" step="1" value="5" />
+                            <span id="idle-hide-value">5 min</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>Position bulle dodo</label>
+                        <select id="sleep-pos">
+                            <option value="bottom-center">Bas centre</option>
+                            <option value="bottom-left">Bas gauche</option>
+                            <option value="bottom-right">Bas droite</option>
+                            <option value="top-center">Haut centre</option>
+                            <option value="top-left">Haut gauche</option>
+                            <option value="top-right">Haut droite</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="panel" id="panel-ia">
@@ -88,9 +113,9 @@
                     <h3>Root Companion V2</h3>
                     <p class="desc">
                         Pet de bureau qui vit sur ton ecran. Tu peux le deplacer, il se balade tout seul.<br><br>
-                        <strong>Jour 1</strong> : overlay + drag + promenade + hover boutons<br>
-                        <strong>Jour 2</strong> : parametres (cette fenetre)<br>
-                        <strong>Suite</strong> : chat IA, memoire, vision écran, agent autonome<br><br>
+                        <strong>Etape 1</strong> : overlay + drag + promenade + hover boutons<br>
+                        <strong>Etape 2</strong> : parametres (cette fenetre)<br>
+                        <strong>Etape suivante</strong> : chat IA, memoire, vision écran, agent autonome<br><br>
                         Mascotte imposée du hackathon utilisee dans <code>asset/</code><br><br>
                         Hackathon 2026 - MIT
                     </p>

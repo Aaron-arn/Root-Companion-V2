@@ -5,7 +5,7 @@ let overlayWindow = null;
 let settingsWindow = null;
 const configPath = path.join(app.getPath("userData"), "config.json");
 function loadConfig() {
-  try { return JSON.parse(fs.readFileSync(configPath, "utf8")); } catch { return { scale: 128, roamEnabled: true, roamInterval: 15, roamSpeed: 1800, apiProvider: "openai", apiModel: "gpt-4o-mini", apiKey: "", apiBaseUrl: "" }; }
+  try { return JSON.parse(fs.readFileSync(configPath, "utf8")); } catch { return { scale: 128, roamEnabled: true, roamInterval: 15, roamSpeed: 1800, idleSleepMin: 3, idleHideMin: 5, sleepPos: "bottom-center", apiProvider: "openai", apiModel: "gpt-4o-mini", apiKey: "", apiBaseUrl: "" }; }
 }
 function saveConfig(cfg) {
   try { fs.mkdirSync(path.dirname(configPath), { recursive: true }); fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2)); } catch {}

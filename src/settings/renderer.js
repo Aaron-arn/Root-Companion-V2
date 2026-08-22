@@ -15,6 +15,11 @@ const roamIntervalInput = document.getElementById("roam-interval");
 const roamIntervalValue = document.getElementById("roam-interval-value");
 const roamSpeedInput = document.getElementById("roam-speed");
 const roamSpeedValue = document.getElementById("roam-speed-value");
+const idleSleepInput = document.getElementById("idle-sleep");
+const idleSleepValue = document.getElementById("idle-sleep-value");
+const idleHideInput = document.getElementById("idle-hide");
+const idleHideValue = document.getElementById("idle-hide-value");
+const sleepPosInput = document.getElementById("sleep-pos");
 const providerInput = document.getElementById("api-provider");
 const modelInput = document.getElementById("api-model");
 const keyInput = document.getElementById("api-key");
@@ -29,6 +34,8 @@ function updateIntervalLabel() {
   roamIntervalValue.textContent = v >= 60 ? (v / 60).toFixed(v % 60 === 0 ? 0 : 1) + "min" : v + "s";
 }
 function updateSpeedLabel() { roamSpeedValue.textContent = parseFloat(roamSpeedInput.value).toFixed(1) + "s"; }
+function updateSleepLabel() { idleSleepValue.textContent = idleSleepInput.value + " min"; }
+function updateHideLabel() { idleHideValue.textContent = idleHideInput.value + " min"; }
 scaleInput.addEventListener("input", () => {
   updateScaleLabel();
   saveSprite();
@@ -41,6 +48,15 @@ roamSpeedInput.addEventListener("input", () => {
   updateSpeedLabel();
   saveSprite();
 });
+idleSleepInput.addEventListener("input", () => {
+  updateSleepLabel();
+  saveSprite();
+});
+idleHideInput.addEventListener("input", () => {
+  updateHideLabel();
+  saveSprite();
+});
+sleepPosInput.addEventListener("change", saveSprite);
 roamEnabledInput.addEventListener("change", saveSprite);
 providerInput.addEventListener("change", () => {
   if (providerInput.value === "custom") baseUrlRow.style.display = "flex";
@@ -55,6 +71,11 @@ async function loadConfig() {
   updateIntervalLabel();
   roamSpeedInput.value = cfg.roamSpeed ? (cfg.roamSpeed / 1000) : 1.8;
   updateSpeedLabel();
+  idleSleepInput.value = cfg.idleSleepMin || 3;
+  updateSleepLabel();
+  idleHideInput.value = cfg.idleHideMin || 5;
+  updateHideLabel();
+  sleepPosInput.value = cfg.sleepPos || "bottom-center";
   providerInput.value = cfg.apiProvider || "openai";
   modelInput.value = cfg.apiModel || "gpt-4o-mini";
   keyInput.value = cfg.apiKey || "";
@@ -66,7 +87,10 @@ async function saveSprite() {
     scale: parseInt(scaleInput.value),
     roamEnabled: roamEnabledInput.checked,
     roamInterval: parseInt(roamIntervalInput.value),
-    roamSpeed: Math.round(parseFloat(roamSpeedInput.value) * 1000)
+    roamSpeed: Math.round(parseFloat(roamSpeedInput.value) * 1000),
+    idleSleepMin: parseInt(idleSleepInput.value),
+    idleHideMin: parseInt(idleHideInput.value),
+    sleepPos: sleepPosInput.value
   });
 }
 saveBtn.addEventListener("click", async () => {

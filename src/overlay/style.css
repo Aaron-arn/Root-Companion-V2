@@ -324,3 +324,110 @@ body {
 .typing .text {
     border-style: dashed;
 }
+.root-sprite.hidden-sprite {
+    opacity: 0;
+    pointer-events: none;
+}
+.root-sprite[data-state="sleeping"] img {
+    animation: sleeping 3s ease-in-out infinite;
+    filter: brightness(0.75) drop-shadow(3px 5px 8px rgba(0, 0, 0, 0.35));
+}
+@keyframes sleeping {
+    0%,
+    100% {
+        transform: translateY(0) scaleX(var(--sx, 1));
+    }
+    50% {
+        transform: translateY(2px) scaleX(var(--sx, 1));
+    }
+}
+.sleep-bubble,
+.notif-bubble {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #14141c;
+    border: 2px solid #ff6600;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    z-index: 1003;
+    width: auto;
+    max-width: 320px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        opacity 0.25s,
+        transform 0.25s;
+}
+.sleep-bubble.hidden,
+.notif-bubble.hidden,
+.sleep-pill.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.sleep-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+.sleep-text {
+    display: flex;
+    flex-direction: column;
+}
+.sleep-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ff6600;
+}
+.sleep-sub {
+    font-size: 10px;
+    color: #999;
+}
+.sleep-wake {
+    background: #ff6600;
+    border: 1px solid #7a2f00;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+}
+.sleep-wake:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+.sleep-hide {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 12px;
+}
+.sleep-pill {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a22;
+    border: 2px solid #ffb400;
+    box-shadow: 3px 3px 0 #000;
+    cursor: pointer;
+    z-index: 1003;
+    transition:
+        opacity 0.25s,
+        transform 0.25s;
+}
+.sleep-pill.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
