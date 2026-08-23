@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld("rootAPI", {
   getMemory: () => ipcRenderer.invoke("get-memory"),
   addMemory: (t) => ipcRenderer.invoke("add-memory", t),
   deleteMemory: (id) => ipcRenderer.invoke("delete-memory", id),
+  updateApp: () => ipcRenderer.invoke("update-app"),
   captureScreen: (mode) => ipcRenderer.invoke("capture-screen", mode),
   getRegionScreenshot: () => ipcRenderer.invoke("get-region-screenshot"),
   sendRegionResult: (r) => ipcRenderer.send("region-result", r),

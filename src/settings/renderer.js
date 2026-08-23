@@ -32,6 +32,7 @@ const resultEl = document.getElementById("ia-result");
 const memoryList = document.getElementById("memory-list");
 const memoryInput = document.getElementById("memory-input");
 const memoryAddBtn = document.getElementById("memory-add");
+const updateBtn = document.getElementById("update-btn");
 function updateScaleLabel() { scaleValue.textContent = scaleInput.value + "px"; }
 function updateIntervalLabel() {
   const v = parseInt(roamIntervalInput.value);
@@ -159,4 +160,13 @@ memoryAddBtn.addEventListener("click", async () => {
   loadMemory();
 });
 memoryInput.addEventListener("keydown", e => { if (e.key === "Enter") memoryAddBtn.click(); });
+if (updateBtn) {
+  updateBtn.addEventListener("click", async () => {
+    updateBtn.textContent = "Mise à jour...";
+    updateBtn.disabled = true;
+    await window.rootAPI.updateApp();
+    updateBtn.textContent = "Mettre à jour";
+    updateBtn.disabled = false;
+  });
+}
 loadConfig();

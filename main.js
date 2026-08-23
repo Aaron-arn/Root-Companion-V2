@@ -5,6 +5,7 @@ const { loadMemory, addMemoryEntry, deleteMemoryEntry, autoMemorize } = require(
 const { captureScreenshot, captureRegion, getRegionScreenshot } = require("./src/main/capture");
 let overlayWindow = null;
 let settingsWindow = null;
+let updateWindow = null;
 const configPath = path.join(app.getPath("userData"), "config.json");
 function loadConfig() {
   try { return JSON.parse(fs.readFileSync(configPath, "utf8")); } catch { return { scale: 128, roamEnabled: true, roamInterval: 15, roamSpeed: 1800, idleSleepMin: 3, idleHideMin: 5, sleepPos: "bottom-center", apiProvider: "openai", apiModel: "gpt-4o-mini", apiKey: "", apiBaseUrl: "" }; }
@@ -39,6 +40,17 @@ function createSettingsWindow() {
   settingsWindow.setMenu(null);
   settingsWindow.once("ready-to-show", () => { settingsWindow.show(); settingsWindow.webContents.send("root-config", loadConfig()); });
   settingsWindow.on("closed", () => { settingsWindow = null; });
+}
+function createUpdateWindow() {
+  if (updateWindow && !updateWindow.isDestroyed()) { updateWindow.focus(); return; }
+  updateWindow = new BrowserWindow({
+    width: 420, height: 320, title: "Mise à jour - Root", resizable: false, minimizable: false, maximizable: false, show: false,
+    webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, nodeIntegration: false }
+  });
+  updateWindow.loadFile(path.join(__dirname, "src", "update", "index.html"));
+  updateWindow.setMenu(null);
+  updateWindow.once("ready-to-show", () => updateWindow.show());
+  updateWindow.on("closed", () => { updateWindow = null; });
 }
 app.whenReady().then(() => {
   app.setAppUserModelId("com.root.companion-v2");
@@ -138,3 +150,30 @@ ipcMain.handle("open-file-dialog", async () => {
   } catch (err) { return { success: false, error: String(err.message || err) }; }
 });
 ipcMain.on("open-settings", () => createSettingsWindow());
+ipcMain.handle("update-app", async () => {
+  try {
+    if (overlayWindow && !overlayWindow.isDestroyed()) overlayWindow.hide();
+    if (settingsWindow && !settingsWindow.isDestroyed()) settingsWindow.hide();
+    createUpdateWindow();
+    const { execFile } = require("child_process");
+    const repoPath = __dirname;
+    const out = await new Promise((res, rej) => {
+      execFile("git", ["pull"], { cwd: repoPath, timeout: 60000 }, (err, stdout, stderr) => {
+        if (err) rej(new Error((stderr || err.message).trim()));
+        else res(stdout);
+      });
+    });
+    const up = !out.trim().toLowerCase().startsWith("already up to date");
+    if (!up) {
+      if (updateWindow && !updateWindow.isDestroyed()) updateWindow.close();
+      if (overlayWindow && !overlayWindow.isDestroyed()) overlayWindow.show();
+      return { updated: false, message: "Deja à jour." };
+    }
+    setTimeout(() => { app.relaunch(); app.exit(0); }, 1500);
+    return { updated: true, message: "Mise à jour en cours - relance..." };
+  } catch (err) {
+    if (updateWindow && !updateWindow.isDestroyed()) updateWindow.close();
+    if (overlayWindow && !overlayWindow.isDestroyed()) overlayWindow.show();
+    return { updated: false, message: "Erreur: " + String(err.message || err) };
+  }
+});
