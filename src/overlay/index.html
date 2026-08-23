@@ -2,7 +2,7 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
-        <title>Root Companion V2</title>
+        <title>Root Companion</title>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -46,9 +46,22 @@
                     <span class="text">Salut ! Moi c'est Root ton assistant ia, hesite pas a m'écrire </span>
                 </div>
             </div>
+            <div id="attach-preview" class="attach-preview hidden"></div>
             <div class="chat-input-row">
+                <button id="attach-btn" class="attach-btn" title="Joindre">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                </button>
                 <input id="chat-input" class="chat-input" placeholder="Ecris a Root..." autocomplete="off" />
                 <button id="chat-send" class="chat-send">➤</button>
+            </div>
+            <div id="attach-menu" class="attach-menu hidden">
+                <button class="attach-option" data-action="screen">Capture écran</button>
+                <button class="attach-option" data-action="window">Capture fenêtre</button>
+                <button class="attach-option" data-action="zone">Capture zone</button>
+                <button class="attach-option" data-action="file">Fichier</button>
             </div>
         </div>
         <div id="sleep-bubble" class="sleep-bubble hidden">

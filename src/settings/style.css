@@ -218,3 +218,38 @@ code {
     padding: 1px 4px;
     font-size: 11px;
 }
+.memory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+.memory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #14141c;
+    border: 1px solid rgba(255, 102, 0, 0.2);
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #ccc;
+}
+.memory-del {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+}
+.memory-del:hover {
+    color: #ff4444;
+}
+.memory-edit {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    margin-right: 4px;
+}
+.memory-edit:hover {
+    color: #ff6600;
+}

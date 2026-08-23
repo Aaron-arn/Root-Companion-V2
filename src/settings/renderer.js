@@ -6,6 +6,7 @@ tabs.forEach(t => {
     panels.forEach(x => x.classList.remove("active"));
     t.classList.add("active");
     document.getElementById("panel-" + t.dataset.tab).classList.add("active");
+    if (t.dataset.tab === "memory") loadMemory();
   });
 });
 const scaleInput = document.getElementById("scale");
@@ -28,6 +29,9 @@ const baseUrlRow = document.getElementById("base-url-row");
 const saveBtn = document.getElementById("save-ia");
 const testBtn = document.getElementById("test-ia");
 const resultEl = document.getElementById("ia-result");
+const memoryList = document.getElementById("memory-list");
+const memoryInput = document.getElementById("memory-input");
+const memoryAddBtn = document.getElementById("memory-add");
 function updateScaleLabel() { scaleValue.textContent = scaleInput.value + "px"; }
 function updateIntervalLabel() {
   const v = parseInt(roamIntervalInput.value);
@@ -81,6 +85,30 @@ async function loadConfig() {
   keyInput.value = cfg.apiKey || "";
   baseUrlInput.value = cfg.apiBaseUrl || "";
   if (providerInput.value === "custom") baseUrlRow.style.display = "flex";
+  loadMemory();
+}
+async function loadMemory() {
+  const m = await window.rootAPI.getMemory();
+  memoryList.innerHTML = "";
+  if (!m.entries.length) { memoryList.innerHTML = '<div class="desc">Aucune memoire</div>'; return; }
+  m.entries.slice(-30).reverse().forEach(en => {
+    const d = document.createElement("div");
+    d.className = "memory-item";
+    d.innerHTML = `<span>${en.text}</span><div><button class="memory-edit" data-id="${en.id}">✎</button><button class="memory-del" data-id="${en.id}">✕</button></div>`;
+    d.querySelector(".memory-del").addEventListener("click", async () => {
+      await window.rootAPI.deleteMemory(en.id);
+      loadMemory();
+    });
+    d.querySelector(".memory-edit").addEventListener("click", async () => {
+      const nv = prompt("Modifier le souvenir:", en.text);
+      if (nv && nv.trim() && nv.trim() !== en.text) {
+        await window.rootAPI.deleteMemory(en.id);
+        await window.rootAPI.addMemory(nv.trim());
+        loadMemory();
+      }
+    });
+    memoryList.appendChild(d);
+  });
 }
 async function saveSprite() {
   await window.rootAPI.updateRootConfig({
@@ -123,4 +151,12 @@ testBtn.addEventListener("click", async () => {
     resultEl.className = "result err";
   }
 });
+memoryAddBtn.addEventListener("click", async () => {
+  const t = memoryInput.value.trim();
+  if (!t) return;
+  await window.rootAPI.addMemory(t);
+  memoryInput.value = "";
+  loadMemory();
+});
+memoryInput.addEventListener("keydown", e => { if (e.key === "Enter") memoryAddBtn.click(); });
 loadConfig();

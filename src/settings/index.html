@@ -17,6 +17,7 @@
             <div class="tabs">
                 <button class="tab active" data-tab="sprite">Sprite</button>
                 <button class="tab" data-tab="ia">IA</button>
+                <button class="tab" data-tab="memory">Memoire</button>
                 <button class="tab" data-tab="about">A propos</button>
             </div>
             <div class="panel active" id="panel-sprite">
@@ -106,6 +107,17 @@
                         <button class="btn" id="test-ia">Tester</button>
                     </div>
                     <div id="ia-result" class="result hidden"></div>
+                </div>
+            </div>
+            <div class="panel" id="panel-memory">
+                <div class="group">
+                    <h3>Mémoire de Root</h3>
+                    <p class="desc">Root dispose d'une memoire il peut se souvenir de toi</p>
+                    <div class="row">
+                        <input type="text" id="memory-input" placeholder="Nouveau souvenir..." />
+                        <button id="memory-add" class="btn primary">Ajouter</button>
+                    </div>
+                    <div id="memory-list" class="memory-list"></div>
                 </div>
             </div>
             <div class="panel" id="panel-about">

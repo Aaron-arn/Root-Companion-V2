@@ -12,6 +12,10 @@ const chatMessages = document.getElementById("chat-messages");
 const chatInput = document.getElementById("chat-input");
 const chatSend = document.getElementById("chat-send");
 const chatClose = document.getElementById("chat-close");
+const attachBtn = document.getElementById("attach-btn");
+const attachMenu = document.getElementById("attach-menu");
+const attachPreview = document.getElementById("attach-preview");
+let attachments = [];
 const sleepBubble = document.getElementById("sleep-bubble");
 const sleepPill = document.getElementById("sleep-pill");
 const notifBubble = document.getElementById("notif-bubble");
@@ -168,7 +172,7 @@ function updateRoamButton() {
   ctrlRoam.classList.toggle("active", roamEnabled);
   ctrlRoam.title = "Promenade: " + (roamEnabled ? "ON" : "OFF");
 }
-function addMessage(author, text) {
+function addMessage(author, text, atts = []) {
   const div = document.createElement("div");
   div.className = "msg " + author;
   const a = document.createElement("span");
@@ -179,8 +183,39 @@ function addMessage(author, text) {
   t.textContent = text;
   div.appendChild(a);
   div.appendChild(t);
+  if (atts.length) {
+    const w = document.createElement("div");
+    w.className = "msg-attachments";
+    atts.forEach(att => {
+      if (att.type === "image" && att.dataUrl) {
+        const img = document.createElement("img");
+        img.src = att.dataUrl;
+        w.appendChild(img);
+      } else {
+        const s = document.createElement("span");
+        s.textContent = att.name || "fichier";
+        w.appendChild(s);
+      }
+    });
+    div.appendChild(w);
+  }
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+function updateAttachPreview() {
+  if (!attachments.length) { attachPreview.classList.add("hidden"); attachPreview.innerHTML = ""; return; }
+  attachPreview.classList.remove("hidden");
+  attachPreview.innerHTML = attachments.map((att, i) => {
+    if (att.type === "image") return `<div class="attach-item"><img src="${att.dataUrl}" alt=""><span>${att.name}</span><button data-rm="${i}" class="attach-remove">✕</button></div>`;
+    return `<div class="attach-item"><span>${att.name}</span><button data-rm="${i}" class="attach-remove">✕</button></div>`;
+  }).join("");
+  attachPreview.querySelectorAll("[data-rm]").forEach(b => {
+    b.addEventListener("click", e => {
+      e.stopPropagation();
+      attachments.splice(parseInt(b.getAttribute("data-rm")), 1);
+      updateAttachPreview();
+    });
+  });
 }
 function openChat() {
   isChatOpen = true;
@@ -196,6 +231,7 @@ function closeChat() {
   isChatOpen = false;
   chatBubble.classList.add("hidden");
   isMouseOverChat = false;
+  attachMenu.classList.add("hidden");
   updateClickThrough();
   resetIdleTimer();
 }
@@ -231,6 +267,52 @@ function setupChat() {
     if (chatBubble.contains(e.target) || rootSprite.contains(e.target) || rootControls.contains(e.target)) return;
     closeChat();
   });
+  attachBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    attachMenu.classList.toggle("hidden");
+  });
+  function compressDataUrl(dataUrl, maxW = 900) {
+    return new Promise(res => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        const c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        res(c.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = () => res(dataUrl);
+      img.src = dataUrl;
+    });
+  }
+  attachMenu.querySelectorAll(".attach-option").forEach(b => {
+    b.addEventListener("click", async e => {
+      e.stopPropagation();
+      attachMenu.classList.add("hidden");
+      const act = b.getAttribute("data-action");
+      if (act === "screen" || act === "window" || act === "zone") {
+        const r = await window.rootAPI.captureScreen(act);
+        if (r.success) {
+          const small = await compressDataUrl(r.dataUrl);
+          attachments.push({ type: "image", dataUrl: small, name: act === "screen" ? "capture-ecran.png" : act === "zone" ? "capture-zone.png" : "capture-fenetre.png" }); updateAttachPreview();
+        } else addMessage("root", "Erreur capture: " + (r.error || ""), []);
+      } else if (act === "file") {
+        const r = await window.rootAPI.openFileDialog();
+        if (r.success) {
+          if (r.type === "image") {
+            const small = await compressDataUrl(r.dataUrl);
+            attachments.push({ type: "image", dataUrl: small, name: r.name });
+          } else attachments.push({ type: "text", name: r.name, content: r.content });
+          updateAttachPreview();
+        }
+      }
+      chatInput.focus();
+    });
+  });
+  document.addEventListener("mousedown", e => {
+    if (!attachMenu.classList.contains("hidden") && !attachBtn.contains(e.target) && !attachMenu.contains(e.target)) attachMenu.classList.add("hidden");
+  });
 }
 const speakAudio = new Audio("../../asset/root-speak.mp3");
 speakAudio.loop = true;
@@ -239,8 +321,7 @@ function typeEffect(el, text, done) {
   const words = String(text).split(/\s+/).filter(Boolean);
   let i = 0;
   el.textContent = "";
-  speakAudio.currentTime = 0;
-  speakAudio.play().catch(() => {});
+  try { speakAudio.currentTime = 0; speakAudio.play().catch(() => {}); } catch {}
   setAnimation("writing");
   function step() {
     if (i < words.length) {
@@ -262,9 +343,12 @@ function stopSpeak() {
 }
 async function sendChat() {
   const text = chatInput.value.trim();
-  if (!text) return;
+  if (!text && !attachments.length) return;
+  const curAtts = [...attachments];
+  attachments = [];
+  updateAttachPreview();
   chatInput.value = "";
-  addMessage("user", text);
+  addMessage("user", text || "(image)", curAtts);
   resetIdleTimer();
   const typingDiv = document.createElement("div");
   typingDiv.className = "msg root typing";
@@ -279,15 +363,23 @@ async function sendChat() {
   chatMessages.appendChild(typingDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   setAnimation("thinking");
-  speakAudio.currentTime = 0;
-  speakAudio.play().catch(() => {});
   let chatHistory = [];
   chatMessages.querySelectorAll(".msg").forEach(m => {
     const author = m.classList.contains("user") ? "user" : "assistant";
     const txt = m.querySelector(".text");
     if (txt && !m.classList.contains("typing")) chatHistory.push({ role: author === "user" ? "user" : "assistant", content: txt.textContent });
   });
-  const messages = [{ role: "system", content: "Tu es Rout, petit compagnon de bureau mignon et utile. Reponds court en francais." }, ...chatHistory.slice(-10)];
+  let userContent;
+  if (curAtts.length) {
+    userContent = [];
+    if (text) userContent.push({ type: "text", text });
+    curAtts.forEach(att => {
+      if (att.type === "image") userContent.push({ type: "image_url", image_url: { url: att.dataUrl } });
+      else userContent.push({ type: "text", text: `[Fichier ${att.name}]\n${att.content || ""}` });
+    });
+  } else userContent = text || "(image)";
+  const lastUser = { role: "user", content: userContent };
+  const messages = [{ role: "system", content: "Tu es Rout, petit compagnon de bureau mignon et utile. Reponds court en francais. Si tu vois une image decris la." }, ...chatHistory.slice(-10).map(m => ({ role: m.role, content: m.content })), lastUser];
   try {
     const res = await window.rootAPI.aiChat(messages);
     typingDiv.remove();
@@ -304,9 +396,18 @@ async function sendChat() {
       div.appendChild(t);
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
-      typeEffect(t, res.content, resetIdleTimer);
+      typeEffect(t, res.content, () => {
+        if (res.memoryAdded && res.memoryAdded.length) {
+          const tag = document.createElement("div");
+          tag.className = "memory-tag";
+          tag.textContent = "éléments ajoutée a la memoire: " + res.memoryAdded.join(", ");
+          div.appendChild(tag);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        resetIdleTimer();
+      });
     } else {
-      addMessage("root", res.error || "Erreur IA");
+      addMessage("root", res.error || "Erreur IA", []);
       setAnimation("idle");
       stopSpeak();
       resetIdleTimer();
@@ -314,7 +415,7 @@ async function sendChat() {
   } catch (e) {
     typingDiv.remove();
     stopSpeak();
-    addMessage("root", "Erreur : " + String(e.message || e));
+    addMessage("root", "Erreur : " + String(e.message || e), []);
     setAnimation("idle");
     resetIdleTimer();
   }

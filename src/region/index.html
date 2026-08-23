@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Selectionner une zone</title>
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                cursor: crosshair;
+                background: transparent;
+                user-select: none;
+            }
+            #bg {
+                position: fixed;
+                inset: 0;
+                background-repeat: no-repeat;
+            }
+            #sel {
+                position: absolute;
+                display: none;
+                border: 2px solid #ff6600;
+                background: rgba(255, 102, 0, 0.12);
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            }
+            #hint {
+                position: fixed;
+                top: 14px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: #e0e0e0;
+                background: #1a1a22;
+                border: 1px solid #ff6600;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-family: "Segoe UI", sans-serif;
+            }
+            #bar {
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: none;
+                gap: 10px;
+                background: #1a1a22;
+                border: 1px solid #ff6600;
+                padding: 8px 14px;
+            }
+            #bar button {
+                border: none;
+                padding: 7px 16px;
+                font-size: 12px;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            #retake {
+                background: #333;
+                color: #e0e0e0;
+            }
+            #validate {
+                background: #ff6600;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="hint">Clique-glisse pour selectionner une zone — Echap pour annuler</div>
+        <div id="bg"></div>
+        <div id="sel"></div>
+        <div id="bar">
+            <button id="retake">Reprendre</button>
+            <button id="validate">Valider</button>
+        </div>
+        <script>
+            const bg = document.getElementById("bg");
+            const sel = document.getElementById("sel");
+            const bar = document.getElementById("bar");
+            let img = null, sx = 0, sy = 0, ex = 0, ey = 0, started = false;
+            window.rootAPI.getRegionScreenshot().then(data => {
+                if (!data) { window.rootAPI.sendRegionResult({ success: false, error: "Aucune capture" }); return; }
+                img = new Image();
+                img.onload = () => {
+                    bg.style.backgroundImage = `url(${data.dataUrl})`;
+                    bg.style.backgroundSize = `${data.width}px ${data.height}px`;
+                };
+                img.src = data.dataUrl;
+            });
+            document.addEventListener("mousedown", e => { started = true; sx = e.clientX; sy = e.clientY; ex = sx; ey = sy; update(); });
+            document.addEventListener("mousemove", e => { if (!started) return; ex = e.clientX; ey = e.clientY; update(); });
+            document.addEventListener("mouseup", () => { if (!started) return; started = false; if (Math.abs(ex - sx) < 8 || Math.abs(ey - sy) < 8) { reset(); return; } bar.style.display = "flex"; });
+            document.addEventListener("keydown", e => { if (e.key === "Escape") window.rootAPI.sendRegionResult({ success: false, error: "Annulé" }); });
+            function update() { const x = Math.min(sx, ex), y = Math.min(sy, ey), w = Math.abs(ex - sx), h = Math.abs(ey - sy); sel.style.display = "block"; sel.style.left = x + "px"; sel.style.top = y + "px"; sel.style.width = w + "px"; sel.style.height = h + "px"; }
+            function reset() { sel.style.display = "none"; bar.style.display = "none"; }
+            document.getElementById("retake").addEventListener("click", reset);
+            document.getElementById("validate").addEventListener("click", () => {
+                if (!img) return;
+                const x = Math.round(Math.min(sx, ex)), y = Math.round(Math.min(sy, ey)), w = Math.round(Math.abs(ex - sx)), h = Math.round(Math.abs(ey - sy));
+                const c = document.createElement("canvas"); c.width = w; c.height = h; c.getContext("2d").drawImage(img, x, y, w, h, 0, 0, w, h);
+                window.rootAPI.sendRegionResult({ success: true, dataUrl: c.toDataURL("image/png"), width: w, height: h });
+            });
+        </script>
+    </body>
+</html>
