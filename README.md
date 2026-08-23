@@ -1,6 +1,6 @@
 # Root Companion
 
-![Root Companion](assets/banniere.png)
+![Root Companion](asset/banniere.png)
 
 **Compagnon de bureau intelligent** — Hackathon MakersHub 2026
 
