@@ -38,7 +38,22 @@
         <div id="chat-bubble" class="chat-bubble hidden">
             <div class="chat-header">
                 <span class="chat-title">ROOT</span>
-                <button id="chat-close" class="chat-close">✕</button>
+                <div class="chat-head-btns">
+                    <button id="chat-history-btn" class="chat-history-btn" title="Historique">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </button>
+                    <button id="chat-close" class="chat-close">✕</button>
+                </div>
+            </div>
+            <div id="chat-history-panel" class="chat-history-panel hidden">
+                <div class="history-head">
+                    <span>Historique</span>
+                    <button id="chat-history-close" class="chat-close">✕</button>
+                </div>
+                <div id="chat-history-list" class="chat-history-list"></div>
             </div>
             <div id="chat-messages" class="chat-messages">
                 <div class="msg root">
@@ -86,6 +101,7 @@
             </div>
             <button id="notif-close" class="sleep-hide">✕</button>
         </div>
+        <script src="pet.js"></script>
         <script src="renderer.js"></script>
     </body>
 </html>

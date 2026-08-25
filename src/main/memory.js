@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const { app } = require("electron");
-const memPath = path.join(app.getPath("userData"), "memory.json");
+const os = require("os");
+const memPath = path.join(os.homedir(), ".root", "memory.json");
 function loadMemory() {
   try {
     const d = JSON.parse(fs.readFileSync(memPath, "utf8"));

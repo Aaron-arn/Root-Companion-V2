@@ -3,10 +3,11 @@ const path = require("path");
 const fs = require("fs");
 const { loadMemory, addMemoryEntry, deleteMemoryEntry, autoMemorize } = require("./src/main/memory");
 const { captureScreenshot, captureRegion, getRegionScreenshot } = require("./src/main/capture");
+const { getConversations, getConversation, appendMessage, deleteConversation, resumeConversation } = require("./src/main/history");
 let overlayWindow = null;
 let settingsWindow = null;
 let updateWindow = null;
-const configPath = path.join(app.getPath("userData"), "config.json");
+const configPath = path.join(require("os").homedir(), ".root", "config.json");
 function loadConfig() {
   try { return JSON.parse(fs.readFileSync(configPath, "utf8")); } catch { return { scale: 128, roamEnabled: true, roamInterval: 15, roamSpeed: 1800, idleSleepMin: 3, idleHideMin: 5, sleepPos: "bottom-center", apiProvider: "openai", apiModel: "gpt-4o-mini", apiKey: "", apiBaseUrl: "" }; }
 }
@@ -130,6 +131,15 @@ ipcMain.handle("ai-chat", async (e, messages) => {
 ipcMain.handle("get-memory", () => loadMemory());
 ipcMain.handle("add-memory", (e, t) => { addMemoryEntry(t); return loadMemory(); });
 ipcMain.handle("delete-memory", (e, id) => { deleteMemoryEntry(id); return loadMemory(); });
+ipcMain.handle("get-conversations", () => getConversations());
+ipcMain.handle("get-conversation", (e, id) => getConversation(id));
+ipcMain.handle("delete-conversation", (e, id) => { deleteConversation(id); return true; });
+ipcMain.handle("resume-conversation", (e, id) => {
+  const c = resumeConversation(id);
+  if (c && overlayWindow && !overlayWindow.isDestroyed()) overlayWindow.webContents.send("load-conversation", c);
+  return c ? true : false;
+});
+ipcMain.on("conversation-message", (e, msg) => appendMessage(msg));
 ipcMain.handle("capture-screen", async (e, mode) => {
   try {
     if (mode === "zone") return await captureRegion(hideOverlay, showOverlay);
